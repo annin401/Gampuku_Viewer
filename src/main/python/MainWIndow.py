@@ -1,6 +1,6 @@
-from PyQt5 import QWidgets
+from PyQt5 import QtWidgets
 
-class MainWindow( QWidgets.QMainWindow ):
+class MainWindow( QtWidgets.QMainWindow ):
 
     def __init__(self):
         super().__init__()
