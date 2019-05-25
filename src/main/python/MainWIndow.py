@@ -1,11 +1,12 @@
 from PyQt5 import QtWidgets
+from ImagePaths import ImagePaths
 
 class MainWindow( QtWidgets.QMainWindow ):
 
     def __init__(self):
         super().__init__()
 
-        self.image_path = None # TODO クラスを作る
+        self.image_paths =  ImagePaths()
         self.image_view_scene = None # TODO クラスを作る
         self.image_viewer = None # TODO QGrapphicsView を入れる
 
