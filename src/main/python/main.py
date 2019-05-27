@@ -1,20 +1,19 @@
 import sys
 from fbs_runtime.application_context import ApplicationContext
-from MainWindow import MainWindow
+from ImageViewer import ImageViewer
 
 class AppContext(ApplicationContext):
 
     def __init__(self):
         super().__init__()
 
-        self.main_window = MainWindow()
+        self.image_viewer = ImageViewer()
 
     def run(self):
-        self.main_window.show()
+        self.image_viewer.show()
         return self.app.exec_()
     
 if __name__ == '__main__':
     appctxt = AppContext()
     exit_code = appctxt.run()
     sys.exit(exit_code)
-
