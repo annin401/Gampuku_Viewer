@@ -16,7 +16,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
                 self.window_width = 600.0
 
                 self.set_imageViewer()
-                self.initMenu()
+                self.init_menu()
 
         def set_imageViewer(self):
                 # フラグセット
@@ -31,15 +31,15 @@ class ImageViewer( QtWidgets.QGraphicsView ):
                 )
 
                 # QGraphicsSceneの作成・および設定.
-                scene = None  # TODO viewを作る
-                # scene.setSceneRect( QtWidgets.QRectF( self.rect()))
-                # self.setScene( scene )
+                scene = ImageViewScene()
+                scene.setSceneRect( QtWidgets.QRectF( self.rect()))
+                self.setScene( scene )
             
-        def initMenu(self):
+        def init_menu(self):
             pass # TODO メニューを作る
 
 
-        def resizeEvent( self, event ):
+        def resize_event( self, event ):
              # ビューをリサイズ時にシーンの矩形を更新する
              super().resizeEvent( event )   
              self.scene().setSceneRect(QtWidgets.QRectF(self.rect()))
