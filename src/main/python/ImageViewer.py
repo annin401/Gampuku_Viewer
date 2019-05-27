@@ -4,6 +4,7 @@ MainWindowの代わり
 '''
 from PyQt5 import QtWidgets, QtCore, QtGui
 from ImagePaths import ImagePaths
+from ImageViewScene import ImageViewScene
 
 class ImageViewer( QtWidgets.QGraphicsView ):
         def __init__(self):
@@ -11,8 +12,8 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
                 self.image_paths =  ImagePaths()
                 self.image_view_scene = None # TODO クラスを作る
-                self.window_height = 400
-                self.window_width = 600
+                self.window_height = 400.0
+                self.window_width = 600.0
 
                 self.set_imageViewer()
                 self.initMenu()
