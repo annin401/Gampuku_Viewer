@@ -13,7 +13,7 @@ class ImageViewScene( QtWidgets.QGraphicsScene ):
 
         # 既にシーンにPixmapアイテムがある場合は削除する。
         if self.__imageItejm:
-        self.removeItem(self.__imageItem)
+            self.removeItem(self.__imageItem)
 
         # イメージを所得
         pixmap = QtGui.QPixmap(filepath)
@@ -24,10 +24,10 @@ class ImageViewScene( QtWidgets.QGraphicsScene ):
         self.__imageItem = item
 
         # 画像をscheneのサイズに合うようにリサイズする
-        self.fitImage()
+        self.fit_image()
 
 
-    def fitImage(self):
+    def fit_image(self):
         
         if not self.imageItem:
             return
