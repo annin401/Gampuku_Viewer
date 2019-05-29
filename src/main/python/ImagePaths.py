@@ -29,6 +29,10 @@ class ImagePaths( QtCore.QObject ):
         self.__itr_current += 1
         return ret
 
+    # ifぶんでTrue/Falseを判定できるようにする
+    def __bool__(self):
+        return bool(self.__path_list)
+
 
     def make_list(self, dir_path: str) -> None :
 
