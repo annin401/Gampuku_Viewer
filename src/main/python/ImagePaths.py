@@ -1,5 +1,6 @@
 '''
 指定されたディレクトリの下のファイルのパスをもつオブジェクト
+添字アクセス，およびイテレート可能
 '''
 import os
 from PyQt5 import QtCore
@@ -11,9 +12,22 @@ class ImagePaths( QtCore.QObject ):
 
         self.__path_list = [] # 読み取り専用
 
-    @property
-    def path_list(self): # path_listのゲッタ
-        return self.__path_list
+    # 添字アクセル可能にするためのメソッド
+    def __getitem__(self, key):
+        return self.__path_list[key]
+
+    # イテレート可能にするためのメソッド
+    def __iter__(self):
+        self.__itr_current = 0
+        return self
+
+    def __next__(self):
+        if self.__itr_current == len(self.__path_list):
+            raise StopIteration()
+
+        ret = self.__path_list[self.__itr_current]
+        self.__itr_current += 1
+        return ret
 
 
     def make_list(self, dir_path: str) -> None :
