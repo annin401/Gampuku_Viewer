@@ -34,6 +34,10 @@ class ImagePaths( QtCore.QObject ):
         return bool(self.__path_list)
 
 
+    # len()で長さを所得できるようにする
+    def __len__(self):
+        return len(self.__path_list)
+
     def make_list(self, dir_path: str) -> None :
 
         # __path_listに先に入っていたら消す
