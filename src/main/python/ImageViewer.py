@@ -54,6 +54,10 @@ class ImageViewer( QtWidgets.QGraphicsView ):
                 'Select Folder', os.path.expanduser('~'),
                 )
 
+            # フォルダーが選択されなかったら終了
+            if dirpath == '':
+                return 
+
             # 画像パスのリストを生成
             self.image_paths.make_list(dirpath)
 
