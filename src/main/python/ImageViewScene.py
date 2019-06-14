@@ -62,7 +62,7 @@ class ImageViewScene( QtWidgets.QGraphicsScene ):
 
 
         # 中央に配置する処理
-        # ほんとは違うメソッドにした方が良いが再計算をしたくないため分けてない
+        # ほんとは違うメソッドにした方が良いが比の再計算をしたくないため分けてない
         if itemAspectRatio >= sceneAspectRatio:
             # 横幅に合わせた場合
             # 変形後の画像の横幅を所得
