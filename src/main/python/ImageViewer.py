@@ -85,7 +85,16 @@ class ImageViewer( QtWidgets.QGraphicsView ):
             # インデックスを更新
             self.path_index += 1 
 
-        def resize_event(self, event):
+        def resizeEvent(self, event):
              # ビューをリサイズ時にシーンの矩形を更新する
              super().resizeEvent( event )   
              self.scene().setSceneRect(QtCore.QRectF(self.rect()))
+
+# for debug
+app = QtWidgets.QApplication([])
+v = ImageViewer()
+v.show()
+v.show_set_Dialog()
+v.start_slideshow()
+import sys
+sys.exit(app.exec_())
