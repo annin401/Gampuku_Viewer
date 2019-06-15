@@ -14,6 +14,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
                 self.image_paths =  ImagePaths()
                 self.window_height = 400.0
                 self.window_width = 600.0
+                self.current_pos = QtCore.QPoint(400, 400) # 初期座標は(400, 400)
 
                 self.set_imageViewer()
                 self.init_menu()
@@ -26,10 +27,15 @@ class ImageViewer( QtWidgets.QGraphicsView ):
                 # for self.update
                 self.path_index = 0
 
+                # for move window
+                self.clicked_pos = QtCore.QPoint()
+
         def set_imageViewer(self):
                 # フラグセット
                 self.setWindowFlags(QtCore.Qt.CustomizeWindowHint) # タイトルバーを消す
                 self.setFixedSize(self.window_width, self.window_height) # サイズを固定
+                self.move(self.current_pos) # ウィンドの場所を移動
+                # TODO 初期位置右下にする
 
                 # QGraphicsViewの設定
                 self.setCacheMode(QtWidgets.QGraphicsView.CacheBackground)        
@@ -89,6 +95,22 @@ class ImageViewer( QtWidgets.QGraphicsView ):
              # ビューをリサイズ時にシーンの矩形を更新する
              super().resizeEvent( event )   
              self.scene().setSceneRect(QtCore.QRectF(self.rect()))
+
+        def mousePressEvent(self, e):
+             # 左クリック時にウィンドを移動させる準備
+             if e.button() == QtCore.Qt.LeftButton:
+                 self.clicked_pos = e.pos() # ウィンドの左上を(0,0)にした相対位置
+
+        def mouseMoveEvent(self, e):
+             # 左クリック時にドラッグでウィンドを移動
+            if e.button() == QtCore.Qt.LeftButton:
+                # マウスの移動距離を求める
+                distance = e.pos() - self.clicked_pos
+                # 現在位置を更新
+                self.current_pos += distance 
+                self.move(self.current_pos)
+
+
 
 # for debug
 app = QtWidgets.QApplication([])
