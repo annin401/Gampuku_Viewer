@@ -122,6 +122,8 @@ class ImageViewer( QtWidgets.QGraphicsView ):
                  # ウィンドウの移動のための設定
                  self.dragging_status = self.STATUS_MOVEABLE
                  self.clicked_pos = event.pos() # ウィンドの左上を(0,0)にした相対位置
+                 self.setCursor(QtCore.Qt.ClosedHandCursor) # カーソルを掴む手の絵に変更
+
 
         def mouseMoveEvent(self, event):
 
@@ -137,6 +139,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         def MouseReleaaseEvent(self, event):
 
             self.dragging_status = self.STATUS_NORMAL
+            self.unsetCursor() # カーソルを元に戻す
 
 
 
