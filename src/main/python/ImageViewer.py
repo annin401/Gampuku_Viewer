@@ -8,13 +8,15 @@ from ImagePaths import ImagePaths
 from ImageViewScene import ImageViewScene
 
 class ImageViewer( QtWidgets.QGraphicsView ):
+
         def __init__(self):
+
                 super().__init__()
 
                 self.image_paths =  ImagePaths()
                 self.window_height = 400.0
                 self.window_width = 600.0
-                self.current_pos = QtCore.QPoint(400, 400) # 初期座標は(400, 400)
+                self.initial_pos = QtCore.QPoint(400, 200) # TODO ディスプレー右下に表示させる
 
                 self.set_imageViewer()
                 self.init_menu()
@@ -27,14 +29,21 @@ class ImageViewer( QtWidgets.QGraphicsView ):
                 # for self.update
                 self.path_index = 0
 
-                # for move window
+                # for status when dragging
+                self.STATUS_NORMAL = 0
+                self.STATUS_MOVEABLE = 1
+                self.dragging_status = self.STATUS_NORMAL
+                # for move action when dragging 
+                self.current_pos = self.initial_pos
                 self.clicked_pos = QtCore.QPoint()
 
+
         def set_imageViewer(self):
+
                 # フラグセット
                 self.setWindowFlags(QtCore.Qt.CustomizeWindowHint) # タイトルバーを消す
                 self.setFixedSize(self.window_width, self.window_height) # サイズを固定
-                self.move(self.current_pos) # ウィンドの場所を移動
+                self.move(self.initial_pos) # ウィンドの場所を移動
                 # TODO 初期位置右下にする
 
                 # QGraphicsViewの設定
@@ -50,6 +59,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
                 self.setScene(scene)
             
         def init_menu(self):
+
             pass # TODO メニューを作る
 
 
@@ -92,23 +102,41 @@ class ImageViewer( QtWidgets.QGraphicsView ):
             self.path_index += 1 
 
         def resizeEvent(self, event):
+
              # ビューをリサイズ時にシーンの矩形を更新する
              super().resizeEvent( event )   
              self.scene().setSceneRect(QtCore.QRectF(self.rect()))
 
-        def mousePressEvent(self, e):
-             # 左クリック時にウィンドを移動させる準備
-             if e.button() == QtCore.Qt.LeftButton:
-                 self.clicked_pos = e.pos() # ウィンドの左上を(0,0)にした相対位置
 
-        def mouseMoveEvent(self, e):
-             # 左クリック時にドラッグでウィンドを移動
-            if e.button() == QtCore.Qt.LeftButton:
-                # マウスの移動距離を求める
-                distance = e.pos() - self.clicked_pos
-                # 現在位置を更新
-                self.current_pos += distance 
-                self.move(self.current_pos)
+        '''
+        mouseEventの関数群で,四隅のドラッグでリサイズを,それ以外の場所でのドラッグで
+        移動を実装している
+        それぞれ別の関数に分けたほうがいい気がするが，ライブラリが用意したイベントハンドラ
+        の関係で分けれていない
+        '''
+
+        def mousePressEvent(self, event):
+
+             if event.button() == QtCore.Qt.LeftButton:
+
+                 # ウィンドウの移動のための設定
+                 self.dragging_status = self.STATUS_MOVEABLE
+                 self.clicked_pos = event.pos() # ウィンドの左上を(0,0)にした相対位置
+
+        def mouseMoveEvent(self, event):
+
+            if event.button() == QtCore.Qt.LeftButton:
+
+                if self.dragging_status == self.STATUS_MOVEABLE:
+                    # マウスの移動距離を求める
+                    distance = event.pos() - self.clicked_pos
+                    # 現在位置を更新
+                    self.current_pos += distance 
+                    self.move(self.current_pos)
+
+        def MouseReleaaseEvent(self, event):
+
+            self.dragging_status = self.STATUS_NORMAL
 
 
 
