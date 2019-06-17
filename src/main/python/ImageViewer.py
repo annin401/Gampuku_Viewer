@@ -41,7 +41,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         def set_imageViewer(self):
 
                 # フラグセット
-                self.setWindowFlags(QtCore.Qt.CustomizeWindowHint) # タイトルバーを消す
+                self.setWindowFlags(QtCore.Qt.FramelessWindowHint) # タイトルバーを消す
                 self.setFixedSize(self.window_width, self.window_height) # サイズを固定
                 self.move(self.initial_pos) # ウィンドの場所を移動
                 # TODO 初期位置右下にする
@@ -124,7 +124,6 @@ class ImageViewer( QtWidgets.QGraphicsView ):
                  self.clicked_pos = event.pos() # ウィンドの左上を(0,0)にした相対位置
                  self.setCursor(QtCore.Qt.ClosedHandCursor) # カーソルを掴む手の絵に変更
 
-
         def mouseMoveEvent(self, event):
 
             if event.button() == QtCore.Qt.LeftButton:
@@ -136,10 +135,10 @@ class ImageViewer( QtWidgets.QGraphicsView ):
                     self.current_pos += distance 
                     self.move(self.current_pos)
 
-        def MouseReleaaseEvent(self, event):
+        def mouseReleaseEvent(self, event):
 
             self.dragging_status = self.STATUS_NORMAL
-            self.unsetCursor() # カーソルを元に戻す
+            self.unsetCursor()# カーソルを元に戻す
 
 
 
