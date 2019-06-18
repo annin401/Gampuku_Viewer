@@ -19,7 +19,6 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         self.initial_pos = QtCore.QPoint(400, 200) # TODO ディスプレー右下に表示させる
 
         self.init_imageViewer()
-        self.init_menu()
 
         # for slideshow
         self.timer = QtCore.QTimer()
@@ -37,6 +36,9 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         self.current_pos = self.initial_pos
         self.clicked_pos = QtCore.QPoint()
 
+        # for context menu
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.init_context_menu)
 
     def init_imageViewer(self):
 
@@ -58,10 +60,27 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         scene.setSceneRect( QtCore.QRectF( self.rect()))
         self.setScene(scene)
 
-    def init_menu(self):
+    def init_context_menu(self):
 
-        pass # TODO メニューを作る
-        
+        # アクションの設定
+        open_folder = QtWidgets.QAction("フォルダーを開く")
+        # open_folder.triggered.connect(self.show_set_Dialog)
+
+        open_environmental_setting = QtWidgets.QAction("環境設定を開く")
+
+        exit_action = QtWidgets.QAction("終了")
+        exit_action.triggered.connect(self.close)
+
+        # メニューを構築
+        self.menu = QtWidgets.QMenu()
+        self.menu.addAction(open_folder)
+        self.menu.addAction(open_environmental_setting)
+        self.menu.addSection("")
+        self.menu.addAction(exit_action)
+
+        # メニューを表示
+        self.menu.exec_(QtGui.QCursor.pos()) # マウスの座標を引数に渡す
+
     def show_set_Dialog(self):
 
         # ファイルダイアログを表示
