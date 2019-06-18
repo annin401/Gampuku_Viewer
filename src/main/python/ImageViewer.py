@@ -9,138 +9,134 @@ from ImageViewScene import ImageViewScene
 
 class ImageViewer( QtWidgets.QGraphicsView ):
 
-        def __init__(self):
+    def __init__(self):
 
-                super().__init__()
+        super().__init__()
 
-                self.image_paths =  ImagePaths()
-                self.window_height = 400.0
-                self.window_width = 600.0
-                self.initial_pos = QtCore.QPoint(400, 200) # TODO ディスプレー右下に表示させる
+        self.image_paths =  ImagePaths()
+        self.window_height = 400.0
+        self.window_width = 600.0
+        self.initial_pos = QtCore.QPoint(400, 200) # TODO ディスプレー右下に表示させる
 
-                self.init_imageViewer()
-                self.init_menu()
+        self.init_imageViewer()
+        self.init_menu()
 
-                # for slideshow
-                self.timer = QtCore.QTimer()
-                self.timer.timeout.connect(self.update) 
-                self.update_interval = 2000 # ミリ秒
+        # for slideshow
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.update) 
+        self.update_interval = 2000 # ミリ秒
 
-                # for self.update
-                self.path_index = 0
+        # for self.update
+        self.path_index = 0
 
-                # for status when dragging
-                self.STATUS_NORMAL = 0
-                self.STATUS_MOVEABLE = 1
-                self.dragging_status = self.STATUS_NORMAL
-                # for move action when dragging 
-                self.current_pos = self.initial_pos
-                self.clicked_pos = QtCore.QPoint()
-
-
-        def init_imageViewer(self):
-
-                # フラグセット
-                self.setWindowFlags(QtCore.Qt.FramelessWindowHint) # タイトルバーを消す
-                self.setFixedSize(self.window_width, self.window_height) # サイズを固定
-                self.move(self.initial_pos) # ウィンドの場所を移動
-                # TODO 初期位置右下にする
-
-                # QGraphicsViewの設定
-                self.setCacheMode(QtWidgets.QGraphicsView.CacheBackground)        
-                self.setRenderHints(QtGui.QPainter.Antialiasing |
-                        QtGui.QPainter.SmoothPixmapTransform |
-                        QtGui.QPainter.TextAntialiasing
-                )
-
-                # QGraphicsSceneの作成・および設定.
-                scene = ImageViewScene(self.window_width, self.window_height)
-                scene.setSceneRect( QtCore.QRectF( self.rect()))
-                self.setScene(scene)
-            
-        def init_menu(self):
-
-            pass # TODO メニューを作る
+        # for status when dragging
+        self.STATUS_NORMAL = 0
+        self.STATUS_MOVEABLE = 1
+        self.dragging_status = self.STATUS_NORMAL
+        # for move action when dragging 
+        self.current_pos = self.initial_pos
+        self.clicked_pos = QtCore.QPoint()
 
 
-        def show_set_Dialog(self):
+    def init_imageViewer(self):
 
-            # ファイルダイアログを表示
-            dirpath = QtWidgets.QFileDialog.getExistingDirectory(self,
-                'Select Folder', os.path.expanduser('~'),
-                )
+        # フラグセット
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint) # タイトルバーを消す
+        self.setFixedSize(self.window_width, self.window_height) # サイズを固定
+        self.move(self.initial_pos) # ウィンドの場所を移動
+        # TODO 初期位置右下にする
 
-            # フォルダーが選択されなかったら終了
-            if dirpath == '':
-                return 
+        # QGraphicsViewの設定
+        self.setCacheMode(QtWidgets.QGraphicsView.CacheBackground)        
+        self.setRenderHints(QtGui.QPainter.Antialiasing |
+                QtGui.QPainter.SmoothPixmapTransform |
+                QtGui.QPainter.TextAntialiasing
+        )
 
-            # 画像パスのリストを生成
-            self.image_paths.make_list(dirpath)
+        # QGraphicsSceneの作成・および設定.
+        scene = ImageViewScene(self.window_width, self.window_height)
+        scene.setSceneRect( QtCore.QRectF( self.rect()))
+        self.setScene(scene)
 
-        def start_slideshow(self):
+    def init_menu(self):
 
-            if not self.image_paths:
-                return 
+        pass # TODO メニューを作る
+        
+    def show_set_Dialog(self):
 
-            # 画像更新をする関数を呼び出すタイマーをスタートする
-            self.timer.start(self.update_interval)
+        # ファイルダイアログを表示
+        dirpath = QtWidgets.QFileDialog.getExistingDirectory(self,
+            'Select Folder', os.path.expanduser('~'),
+            )
 
-            # 最初に表示する画像をセットする
-            self.update()
+        # フォルダーが選択されなかったら終了
+        if dirpath == '':
+            return 
 
+        # 画像パスのリストを生成
+        self.image_paths.make_list(dirpath)
 
-        def update(self):
+    def start_slideshow(self):
 
-            # インデックスが最後まで到達したら最初に戻す
-            if self.path_index == len(self.image_paths):
-                self.path_index = 0
+        if not self.image_paths:
+            return 
 
-            # 画像をセットする
-            self.scene().set_file( self.image_paths[self.path_index] )
+        # 画像更新をする関数を呼び出すタイマーをスタートする
+        self.timer.start(self.update_interval)
 
-            # インデックスを更新
-            self.path_index += 1 
+        # 最初に表示する画像をセットする
+        self.update()
 
-        def resizeEvent(self, event):
+    def update(self):
 
-             # ビューをリサイズ時にシーンの矩形を更新する
-             super().resizeEvent( event )   
-             self.scene().setSceneRect(QtCore.QRectF(self.rect()))
+        # インデックスが最後まで到達したら最初に戻す
+        if self.path_index == len(self.image_paths):
+            self.path_index = 0
 
+        # 画像をセットする
+        self.scene().set_file( self.image_paths[self.path_index] )
 
-        '''
-        mouseEventの関数群で,四隅のドラッグでリサイズを,それ以外の場所でのドラッグで
-        移動を実装している
-        それぞれ別の関数に分けたほうがいい気がするが，ライブラリが用意したイベントハンドラ
-        の関係で分けれていない
-        '''
+        # インデックスを更新
+        self.path_index += 1 
 
-        def mousePressEvent(self, event):
+    def resizeEvent(self, event):
 
-             if event.button() == QtCore.Qt.LeftButton:
-
-                 # ウィンドウの移動のための設定
-                 self.dragging_status = self.STATUS_MOVEABLE
-                 self.clicked_pos = event.pos() # ウィンドの左上を(0,0)にした相対位置
-                 self.setCursor(QtCore.Qt.ClosedHandCursor) # カーソルを掴む手の絵に変更
-
-        def mouseMoveEvent(self, event):
-
-            if event.button() == QtCore.Qt.LeftButton:
-
-                if self.dragging_status == self.STATUS_MOVEABLE:
-                    # マウスの移動距離を求める
-                    distance = event.pos() - self.clicked_pos
-                    # 現在位置を更新
-                    self.current_pos += distance 
-                    self.move(self.current_pos)
-
-        def mouseReleaseEvent(self, event):
-
-            self.dragging_status = self.STATUS_NORMAL
-            self.unsetCursor()# カーソルを元に戻す
+        # ビューをリサイズ時にシーンの矩形を更新する
+        super().resizeEvent( event )   
+        self.scene().setSceneRect(QtCore.QRectF(self.rect()))
 
 
+    '''
+    mouseEventの関数群で,四隅のドラッグでリサイズを,それ以外の場所でのドラッグで
+    移動を実装している
+    それぞれ別の関数に分けたほうがいい気がするが，ライブラリが用意したイベントハンドラ
+    の関係で分けれていない
+    '''
+
+    def mousePressEvent(self, event):
+
+        if event.button() == QtCore.Qt.LeftButton:
+
+            # ウィンドウの移動のための設定
+            self.dragging_status = self.STATUS_MOVEABLE
+            self.clicked_pos = event.pos() # ウィンドの左上を(0,0)にした相対位置
+            self.setCursor(QtCore.Qt.ClosedHandCursor) # カーソルを掴む手の絵に変更
+
+    def mouseMoveEvent(self, event):
+
+        if event.button() == QtCore.Qt.LeftButton:
+
+            if self.dragging_status == self.STATUS_MOVEABLE:
+                # マウスの移動距離を求める
+                distance = event.pos() - self.clicked_pos
+                # 現在位置を更新
+                self.current_pos += distance 
+                self.move(self.current_pos)
+
+    def mouseReleaseEvent(self, event):
+
+        self.dragging_status = self.STATUS_NORMAL
+        self.unsetCursor()# カーソルを元に戻す
 
 # for debug
 app = QtWidgets.QApplication([])
