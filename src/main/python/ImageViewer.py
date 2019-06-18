@@ -24,8 +24,6 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update) 
         self.update_interval = 2000 # ミリ秒
-
-        # for self.update
         self.path_index = 0
 
         # for status when dragging
@@ -64,7 +62,9 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # アクションの設定
         open_folder = QtWidgets.QAction("フォルダーを開く")
-        # open_folder.triggered.connect(self.show_set_Dialog)
+        open_folder.triggered.connect(self.stop_slideshow)
+        open_folder.triggered.connect(self.show_set_Dialog)
+        open_folder.triggered.connect(self.start_slideshow)
 
         open_environmental_setting = QtWidgets.QAction("環境設定を開く")
 
@@ -98,13 +98,21 @@ class ImageViewer( QtWidgets.QGraphicsView ):
     def start_slideshow(self):
 
         if not self.image_paths:
-            return 
+            return
+
+        # 初期化
+        self.path_index = 0
 
         # 画像更新をする関数を呼び出すタイマーをスタートする
         self.timer.start(self.update_interval)
 
         # 最初に表示する画像をセットする
         self.update()
+
+    def stop_slideshow(self):
+
+        # 画像更新をする関数を呼び出すタイマーをストップする 
+        self.timer.stop()
 
     def update(self):
 
