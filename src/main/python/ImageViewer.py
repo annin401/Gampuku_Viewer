@@ -18,7 +18,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
                 self.window_width = 600.0
                 self.initial_pos = QtCore.QPoint(400, 200) # TODO ディスプレー右下に表示させる
 
-                self.set_imageViewer()
+                self.init_imageViewer()
                 self.init_menu()
 
                 # for slideshow
@@ -38,7 +38,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
                 self.clicked_pos = QtCore.QPoint()
 
 
-        def set_imageViewer(self):
+        def init_imageViewer(self):
 
                 # フラグセット
                 self.setWindowFlags(QtCore.Qt.FramelessWindowHint) # タイトルバーを消す
