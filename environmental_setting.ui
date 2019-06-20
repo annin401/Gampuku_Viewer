@@ -63,6 +63,9 @@ color: &quot;#E7E8E8&quot;</string>
           <property name="styleSheet">
            <string notr="true">background-color: &quot;#67696E&quot;</string>
           </property>
+          <property name="value">
+           <number>2</number>
+          </property>
          </widget>
         </item>
         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
@@ -115,6 +118,9 @@ color: &quot;#E7E8E8&quot;</string>
        <widget class="QCheckBox" name="checkBox">
         <property name="text">
          <string>画面を一番上のままにする</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
