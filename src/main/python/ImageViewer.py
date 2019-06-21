@@ -23,7 +23,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # for slideshow
         self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.update) 
+        self.timer.timeout.connect(self.update_image) 
         self.update_interval = 2000 # ミリ秒
         self.path_index = 0
 
@@ -114,14 +114,14 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         self.timer.start(self.update_interval)
 
         # 最初に表示する画像をセットする
-        self.update()
+        self.update_image()
 
     def stop_slideshow(self):
 
         # 画像更新をする関数を呼び出すタイマーをストップする 
         self.timer.stop()
 
-    def update(self):
+    def update_image(self):
 
         # インデックスが最後まで到達したら最初に戻す
         if self.path_index == len(self.image_paths):
