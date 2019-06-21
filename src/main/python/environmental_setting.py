@@ -8,12 +8,21 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_enviromental_setting(object):
+class Ui_enviromental_setting(QtCore.QObject):
+    # シグナルの宣言
+    update_interval_changed = QtCore.pyqtSignal(int)
+    window_on_top_state_changed = QtCore.pyqtSignal(int)
+
+    # qt組み込みのシグナルと自作シグナルをコネクト
+    def connect_signal(self):
+        self.spinBox.valueChanged.connect(self.update_interval_changed.emit)
+        self.checkBox.stateChanged.connect(self.window_on_top_state_changed.emit)
+
     def setupUi(self, enviromental_setting):
         enviromental_setting.setObjectName("enviromental_setting")
-        enviromental_setting.resize(280, 180)
-        enviromental_setting.setMinimumSize(QtCore.QSize(280, 180))
-        enviromental_setting.setMaximumSize(QtCore.QSize(280, 180))
+        enviromental_setting.resize(250, 150)
+        enviromental_setting.setMinimumSize(QtCore.QSize(250, 150))
+        enviromental_setting.setMaximumSize(QtCore.QSize(250, 150))
         enviromental_setting.setStyleSheet("font: 13pt \"Hiragino Sans\";\n"
 "color: \"#E7E8E8\"")
         self.centralwidget = QtWidgets.QWidget(enviromental_setting)
@@ -32,6 +41,7 @@ class Ui_enviromental_setting(object):
         self.horizontalLayout.addWidget(self.label, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
         self.spinBox = QtWidgets.QSpinBox(self.centralwidget)
         self.spinBox.setStyleSheet("background-color: \"#67696E\"")
+        self.spinBox.setMinimum(1)
         self.spinBox.setProperty("value", 2)
         self.spinBox.setObjectName("spinBox")
         self.horizontalLayout.addWidget(self.spinBox, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
@@ -60,7 +70,7 @@ class Ui_enviromental_setting(object):
         self.verticalLayout_2.addLayout(self.verticalLayout_4)
         enviromental_setting.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(enviromental_setting)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 280, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 250, 22))
         self.menubar.setObjectName("menubar")
         enviromental_setting.setMenuBar(self.menubar)
 
@@ -69,7 +79,7 @@ class Ui_enviromental_setting(object):
 
     def retranslateUi(self, enviromental_setting):
         _translate = QtCore.QCoreApplication.translate
-        enviromental_setting.setWindowTitle(_translate("enviromental_setting", "MainWindow"))
+        enviromental_setting.setWindowTitle(_translate("enviromental_setting", "環境設定"))
         self.label.setText(_translate("enviromental_setting", "更新時間： "))
         self.label_2.setText(_translate("enviromental_setting", "秒"))
         self.checkBox.setText(_translate("enviromental_setting", "画面を一番上のままにする"))
