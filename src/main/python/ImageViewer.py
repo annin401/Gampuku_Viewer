@@ -39,6 +39,9 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.init_context_menu)
 
+        # for environmental_setting
+        self.env_window = environmental_setting()
+
     def init_imageViewer(self):
 
         # フラグセット
@@ -87,6 +90,17 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         self.env_window = environmental_setting()
         self.env_window.show()
+
+        self.env_window.update_interval_changed.connect(self.set_update_interval)
+
+    def set_update_interval(self, sec: int)-> None:
+
+        # 秒をミリ秒に直す
+        m_sec = sec * 1000
+
+        self.update_interval = m_sec
+
+        self.timer.start(self.update_interval)
 
     def show_set_Dialog(self):
 
