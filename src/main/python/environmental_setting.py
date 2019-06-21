@@ -8,15 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_enviromental_setting(QtCore.QObject):
-    # シグナルの宣言
-    update_interval_changed = QtCore.pyqtSignal(int)
-    window_on_top_state_changed = QtCore.pyqtSignal(int)
-
-    # qt組み込みのシグナルと自作シグナルをコネクト
-    def connect_signal(self):
-        self.spinBox.valueChanged.connect(self.update_interval_changed.emit)
-        self.checkBox.stateChanged.connect(self.window_on_top_state_changed.emit)
+class Ui_enviromental_setting(object):
 
     def setupUi(self, enviromental_setting):
         enviromental_setting.setObjectName("enviromental_setting")
@@ -84,3 +76,20 @@ class Ui_enviromental_setting(QtCore.QObject):
         self.label_2.setText(_translate("enviromental_setting", "秒"))
         self.checkBox.setText(_translate("enviromental_setting", "画面を一番上のままにする"))
 
+class environmental_setting(QtWidgets.QMainWindow):
+
+    # シグナルの宣言
+    update_interval_changed = QtCore.pyqtSignal(int)
+    window_on_top_state_changed = QtCore.pyqtSignal(int)
+
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_enviromental_setting()
+        self.ui.setupUi(self)
+
+        self.connect_signal()
+
+    # qt組み込みのシグナルと自作シグナルをコネクト
+    def connect_signal(self):
+        self.ui.spinBox.valueChanged.connect(self.update_interval_changed.emit)
+        self.ui.checkBox.stateChanged.connect(self.window_on_top_state_changed.emit)

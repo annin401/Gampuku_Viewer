@@ -6,6 +6,7 @@ import os
 from PyQt5 import QtWidgets, QtCore, QtGui
 from ImagePaths import ImagePaths
 from ImageViewScene import ImageViewScene
+from environmental_setting import environmental_setting
 
 class ImageViewer( QtWidgets.QGraphicsView ):
 
@@ -67,6 +68,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         open_folder.triggered.connect(self.start_slideshow)
 
         open_environmental_setting = QtWidgets.QAction("環境設定を開く")
+        open_environmental_setting.triggered.connect(self.init_environmental_setting)
 
         exit_action = QtWidgets.QAction("終了")
         exit_action.triggered.connect(self.close)
@@ -80,6 +82,11 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # メニューを表示
         self.menu.exec_(QtGui.QCursor.pos()) # マウスの座標を引数に渡す
+
+    def init_environmental_setting(self):
+
+        self.env_window = environmental_setting()
+        self.env_window.show()
 
     def show_set_Dialog(self):
 
