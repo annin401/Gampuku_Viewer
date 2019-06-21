@@ -15,9 +15,10 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         super().__init__()
 
         self.image_paths =  ImagePaths()
-        self.window_height = 400.0
-        self.window_width = 600.0
+        self.window_height = 270.0
+        self.window_width = 480.0
         self.initial_pos = QtCore.QPoint(400, 200) # TODO ディスプレー右下に表示させる
+        self.window_setting_flag = QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint
 
         self.init_imageViewer()
 
@@ -42,10 +43,11 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         # for environmental_setting
         self.env_window = environmental_setting()
 
+
     def init_imageViewer(self):
 
         # フラグセット
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint) # タイトルバーを消す
+        self.setWindowFlags(self.window_setting_flag) # タイトルバーを消す
         self.setFixedSize(self.window_width, self.window_height) # サイズを固定
         self.move(self.initial_pos) # ウィンドの場所を移動
         # TODO 初期位置右下にする
@@ -88,19 +90,33 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
     def init_environmental_setting(self):
 
-        self.env_window = environmental_setting()
         self.env_window.show()
+        self.env_window.move(0, 0)
 
+        # env_windowからでるsignalを接続
         self.env_window.update_interval_changed.connect(self.set_update_interval)
+        self.env_window.window_on_top_state_changed.connect(self.set_window_setting_flag)
 
     def set_update_interval(self, sec: int)-> None:
 
         # 秒をミリ秒に直す
         m_sec = sec * 1000
-
         self.update_interval = m_sec
 
         self.timer.start(self.update_interval)
+
+    def set_window_setting_flag(self, state: int)-> None:
+
+        if state == QtCore.Qt.Unchecked:
+            self.window_setting_flag = QtCore.Qt.FramelessWindowHint
+        elif state == QtCore.Qt.Checked:
+            self.window_setting_flag = QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint
+
+        # フラグを更新
+        self.setWindowFlags(self.window_setting_flag)
+
+        # フラグを更新するとウィンドウが消えるので再描画
+        self.show()
 
     def show_set_Dialog(self):
 
