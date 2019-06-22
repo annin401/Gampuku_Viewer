@@ -15,10 +15,11 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         super().__init__()
 
         self.image_paths =  ImagePaths()
-        self.window_height = 270.0
-        self.window_width = 480.0
+        self.window_height = 270.0 # px
+        self.window_width = 480.0 # px
         self.initial_pos = QtCore.QPoint(400, 200) # TODO ディスプレー右下に表示させる
         self.window_setting_flag = QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint
+        self.window_opacity = 1.0 
 
         self.init_imageViewer()
 
@@ -49,6 +50,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         # フラグセット
         self.setWindowFlags(self.window_setting_flag) # タイトルバーを消す
         self.setFixedSize(self.window_width, self.window_height) # サイズを固定
+        self.setWindowOpacity(self.window_opacity)
         self.move(self.initial_pos) # ウィンドの場所を移動
         # TODO 初期位置右下にする
 
@@ -90,11 +92,14 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
     def init_environmental_setting(self):
 
+        # 環境設定ウィンドウを表示
         self.env_window.show()
+        # 画面の一番上に固定されたウィンドウとかぶるので左上に移動
         self.env_window.move(0, 0)
 
         # env_windowからでるsignalを接続
         self.env_window.update_interval_changed.connect(self.set_update_interval)
+        self.env_window.opacity_changed.connect(self.set_opacity)
         self.env_window.window_on_top_state_changed.connect(self.set_window_setting_flag)
 
     def set_update_interval(self, sec: int)-> None:
@@ -104,6 +109,18 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         self.update_interval = m_sec
 
         self.timer.start(self.update_interval)
+
+    def set_opacity(self, reversed_opacity: int)-> None:
+
+        # 入力では1-opacityの形で与えられる
+        # 透明度を小数に直し,opacityを元の形に戻す
+        self.window_opacity = 1.0 - float(reversed_opacity) / 100
+
+        # ウィンドウの透明度を変更
+        self.setWindowOpacity(self.window_opacity)
+
+        # フラグを更新するとウィンドウが消えるので再描画
+        self.show()
 
     def set_window_setting_flag(self, state: int)-> None:
 

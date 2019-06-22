@@ -9,12 +9,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_enviromental_setting(object):
-
     def setupUi(self, enviromental_setting):
         enviromental_setting.setObjectName("enviromental_setting")
-        enviromental_setting.resize(250, 150)
-        enviromental_setting.setMinimumSize(QtCore.QSize(250, 150))
-        enviromental_setting.setMaximumSize(QtCore.QSize(250, 150))
+        enviromental_setting.resize(350, 200)
+        enviromental_setting.setMinimumSize(QtCore.QSize(350, 200))
+        enviromental_setting.setMaximumSize(QtCore.QSize(350, 200))
         enviromental_setting.setStyleSheet("font: 13pt \"Hiragino Sans\";\n"
 "color: \"#E7E8E8\"")
         self.centralwidget = QtWidgets.QWidget(enviromental_setting)
@@ -34,6 +33,7 @@ class Ui_enviromental_setting(object):
         self.spinBox = QtWidgets.QSpinBox(self.centralwidget)
         self.spinBox.setStyleSheet("background-color: \"#67696E\"")
         self.spinBox.setMinimum(1)
+        self.spinBox.setMaximum(999)
         self.spinBox.setProperty("value", 2)
         self.spinBox.setObjectName("spinBox")
         self.horizontalLayout.addWidget(self.spinBox, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
@@ -53,6 +53,25 @@ class Ui_enviromental_setting(object):
         self.line.setFrameShape(QtWidgets.QFrame.HLine)
         self.line.setObjectName("line")
         self.verticalLayout_2.addWidget(self.line)
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.label_3.setObjectName("label_3")
+        self.verticalLayout_3.addWidget(self.label_3, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignBottom)
+        self.horizontalSlider = QtWidgets.QSlider(self.centralwidget)
+        self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.horizontalSlider.setObjectName("horizontalSlider")
+        self.verticalLayout_3.addWidget(self.horizontalSlider, 0, QtCore.Qt.AlignVCenter)
+        self.verticalLayout_2.addLayout(self.verticalLayout_3)
+        self.line_2 = QtWidgets.QFrame(self.centralwidget)
+        self.line_2.setStyleSheet("color: \"#6B7379\";\n"
+"")
+        self.line_2.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.line_2.setLineWidth(1)
+        self.line_2.setMidLineWidth(0)
+        self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_2.setObjectName("line_2")
+        self.verticalLayout_2.addWidget(self.line_2)
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.checkBox = QtWidgets.QCheckBox(self.centralwidget)
@@ -62,7 +81,7 @@ class Ui_enviromental_setting(object):
         self.verticalLayout_2.addLayout(self.verticalLayout_4)
         enviromental_setting.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(enviromental_setting)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 250, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 350, 22))
         self.menubar.setObjectName("menubar")
         enviromental_setting.setMenuBar(self.menubar)
 
@@ -74,12 +93,15 @@ class Ui_enviromental_setting(object):
         enviromental_setting.setWindowTitle(_translate("enviromental_setting", "環境設定"))
         self.label.setText(_translate("enviromental_setting", "更新時間： "))
         self.label_2.setText(_translate("enviromental_setting", "秒"))
+        self.label_3.setText(_translate("enviromental_setting", "ウィンドウの透明度"))
         self.checkBox.setText(_translate("enviromental_setting", "画面を一番上のままにする"))
+
 
 class environmental_setting(QtWidgets.QMainWindow):
 
     # シグナルの宣言
     update_interval_changed = QtCore.pyqtSignal(int)
+    opacity_changed = QtCore.pyqtSignal(int)
     window_on_top_state_changed = QtCore.pyqtSignal(int)
 
     def __init__(self):
@@ -92,4 +114,5 @@ class environmental_setting(QtWidgets.QMainWindow):
     # qt組み込みのシグナルと自作シグナルをコネクト
     def connect_signal(self):
         self.ui.spinBox.valueChanged.connect(self.update_interval_changed.emit)
+        self.ui.horizontalSlider.valueChanged.connect(self.opacity_changed.emit)
         self.ui.checkBox.stateChanged.connect(self.window_on_top_state_changed.emit)
