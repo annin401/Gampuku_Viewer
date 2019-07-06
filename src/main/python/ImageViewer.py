@@ -115,6 +115,10 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         # 透明度を小数に直し,opacityを元の形に戻す
         self.window_opacity = 1.0 - float(reversed_opacity) / 100
 
+        if self.window_opacity < 0.05:
+            # ウィンドウが不本意に非アクティブになるバグを回避するため
+            self.window_opacity = 0.05
+
         # ウィンドウの透明度を変更
         self.setWindowOpacity(self.window_opacity)
 
