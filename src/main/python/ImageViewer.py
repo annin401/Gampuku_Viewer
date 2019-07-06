@@ -16,8 +16,6 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         super().__init__()
 
         self.image_paths =  ImagePaths()
-        self.window_size = QtCore.QSize(480, 270.0) # px 初期位置
-        self.initial_pos = QtCore.QPoint(400, 200) # TODO ディスプレー右下に表示させる
         self.window_setting_flag = QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint
         self.window_opacity = 1.0 
 
@@ -32,8 +30,8 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         # for status when dragging
         self.pressed_status = Pressed_status.NORMAL
         # for move action when dragging 
-        self.current_pos = self.initial_pos
         self.clicked_pos = QtCore.QPoint()
+        self.size_when_clicked = QtCore.QSize()
 
         # for context menu
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -45,13 +43,15 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
     def init_imageViewer(self):
 
-        # フラグセット
-        self.setWindowFlags(self.window_setting_flag) # タイトルバーを消す
+        initial_size = QtCore.QSize(480.0, 270.0) # px 
+        self.resize(initial_size) #　初期ウィンドウサイズを指定
+
+        initial_pos = self._get_initial_pos_hint()
+        self.move(initial_pos) # ウィンドの場所を移動
+
+        self.setWindowFlags(self.window_setting_flag) # フラグセット
         self.setMinimumSize(160, 90) # 最小ウィンドウサイズを設定
         self.setWindowOpacity(self.window_opacity)
-        self.move(self.initial_pos) # ウィンドの場所を移動
-        self.resize(self.window_size) #　初期ウィンドウサイズを指定
-        # TODO 初期位置右下にする
 
         # QGraphicsViewの設定
         self.setCacheMode(QtWidgets.QGraphicsView.CacheBackground)        
@@ -61,7 +61,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         )
 
         # QGraphicsSceneの作成・および設定.
-        scene = ImageViewScene(self.window_size.width(), self.window_size.height())
+        scene = ImageViewScene(self.width(), self.height())
         scene.setSceneRect( QtCore.QRectF( self.rect()))
         self.setScene(scene)
 
@@ -101,6 +101,16 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         self.env_window.opacity_changed.connect(self.set_opacity)
         self.env_window.window_on_top_state_changed.connect(self.set_window_setting_flag)
 
+    def _get_initial_pos_hint(self) -> QtCore.QPoint:
+        """
+        必ずウィンドウのサイズの初期化を行ってからこの関数を呼び出してください
+        """
+        # ディスプレイのタスクバーなどを除いたサイズを所得
+        d_width = QtWidgets.qApp.desktop().availableGeometry().width()
+        d_height = QtWidgets.qApp.desktop().availableGeometry().height()
+
+        margin = 20 # px
+        return QtCore.QPoint(d_width - self.width() - margin, d_height - self.height() - margin)
     def set_update_interval(self, sec: int)-> None:
 
         # 秒をミリ秒に直す
@@ -205,8 +215,9 @@ class ImageViewer( QtWidgets.QGraphicsView ):
     def mousePressEvent(self, event):
 
         self.clicked_pos = event.pos() # ウィンドの左上を(0,0)にした相対位置
+        self.size_when_clicked = self.size()
 
-        grip_range = 8 # px
+        grip_range = 10 # px
 
         if event.button() == QtCore.Qt.LeftButton:
 
@@ -250,56 +261,49 @@ class ImageViewer( QtWidgets.QGraphicsView ):
                 self.resize(delta_x, delta_y)
 
                 # 位置の更新
-                self.current_pos.setX(self.current_pos.x() + delta_pos.x())
-                self.current_pos.setY(self.current_pos.y() + delta_pos.y())
-                self.move(self.current_pos)
+                self.move(self.pos().x() + delta_pos.x(), self.pos().y() + delta_pos.y())
 
             elif self.pressed_status == Pressed_status.RESIZEABLE_UPPER_RIGHT:
                 # マウスの移動距離を求める
                 delta_pos = event.pos() - self.clicked_pos
-                delta_x = self.window_size.width() + delta_pos.x()
+                delta_x = self.size_when_clicked.width() + delta_pos.x()
                 delta_y = self.height() - delta_pos.y()
 
                 # サイズを更新
                 self.resize(delta_x, delta_y)
                 # 位置の更新
-                self.current_pos.setY(self.current_pos.y() + delta_pos.y())
-                self.move(self.current_pos)
+                self.move(self.pos().x(), self.pos().y() + delta_pos.y())
 
             elif self.pressed_status == Pressed_status.RESIZEABLE_UNDER_RIGHT:
                 # マウスの移動距離を求める
                 delta_pos = event.pos() - self.clicked_pos
-                delta_x = self.window_size.width() + delta_pos.x() 
-                delta_y = self.window_size.height() + delta_pos.y() 
+                delta_x = self.size_when_clicked.width() + delta_pos.x() 
+                delta_y = self.size_when_clicked.height() + delta_pos.y() 
 
                 # サイズを更新
                 self.resize(delta_x, delta_y)
+
             elif self.pressed_status == Pressed_status.RESIZEABLE_UNDER_LEFT:
                 # マウスの移動距離を求める
                 delta_pos = event.pos() - self.clicked_pos
                 delta_x = self.width() - delta_pos.x()
-                delta_y = self.window_size.height() + delta_pos.y()
+                delta_y = self.size_when_clicked.height() + delta_pos.y()
 
                 # サイズを更新
                 self.resize(delta_x, delta_y)
                 # 位置の更新
-                self.current_pos.setX(self.current_pos.x() + delta_pos.x())
-                self.move(self.current_pos)
+                self.move(self.pos().x() + delta_pos.x(), self.pos().y())
 
             elif self.pressed_status == Pressed_status.DRAGGABLE:
                 # マウスの移動距離を求める
                 delta_pos = event.pos() - self.clicked_pos
                 # 現在位置を更新
-                self.current_pos += delta_pos 
-                self.move(self.current_pos)
+                self.move(self.pos() + delta_pos)
 
     def mouseReleaseEvent(self, event):
 
         self.pressed_status = Pressed_status.NORMAL
         self.unsetCursor()# カーソルを元に戻す
-
-        # ウィンドウサイズの更新
-        self.window_size = self.size()
 
 class Pressed_status(Enum):
 
