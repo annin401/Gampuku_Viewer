@@ -3,10 +3,14 @@ from PyQt5 import QtWidgets, QtGui
 class ImageViewScene( QtWidgets.QGraphicsScene ):
 
     def __init__(self, width: float, height: float):
-                super().__init__()
-                self.__imageItem = None
-                self.__secene_width = width
-                self.__scene_height = height
+        super().__init__()
+        self.__imageItem = None
+        self.__secene_width = width
+        self.__scene_height = height
+
+    def set_secene_size(self, width: float, height: float):
+        self.__secene_width = width
+        self.__scene_height = height
 
 
     def set_file(self, filepath: str) -> None :
