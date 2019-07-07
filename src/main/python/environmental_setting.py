@@ -97,7 +97,7 @@ class Ui_enviromental_setting(object):
         self.checkBox.setText(_translate("enviromental_setting", "画面を一番上のままにする"))
 
 
-class environmental_setting(QtWidgets.QMainWindow):
+class Environmental_setting(QtWidgets.QMainWindow):
 
     # シグナルの宣言
     update_interval_changed = QtCore.pyqtSignal(int)
