@@ -51,6 +51,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         self.setWindowFlags(self.window_setting_flag) # フラグセット
         self.setMinimumSize(160, 90) # 最小ウィンドウサイズを設定
+        self.setBackgroundBrush(QtGui.QColor("#181A1B"))
         self.setWindowOpacity(self.window_opacity)
 
         # QGraphicsViewの設定
@@ -109,7 +110,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         d_width = QtWidgets.qApp.desktop().availableGeometry().width()
         d_height = QtWidgets.qApp.desktop().availableGeometry().height()
 
-        margin = 20 # px
+        margin = 30 # px
         return QtCore.QPoint(d_width - self.width() - margin, d_height - self.height() - margin)
     def set_update_interval(self, sec: int)-> None:
 
