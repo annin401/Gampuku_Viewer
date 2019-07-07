@@ -7,7 +7,7 @@ from enum import Enum, auto
 from PyQt5 import QtWidgets, QtCore, QtGui
 from ImagePaths import ImagePaths
 from ImageViewScene import ImageViewScene
-from environmental_setting import environmental_setting
+from environmental_setting import Environmental_setting
 
 class ImageViewer( QtWidgets.QGraphicsView ):
 
@@ -38,7 +38,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         self.customContextMenuRequested.connect(self.init_context_menu)
 
         # for environmental_setting
-        self.env_window = environmental_setting()
+        self.env_window = Environmental_setting()
 
 
     def init_imageViewer(self):
@@ -49,8 +49,8 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         initial_pos = self._get_initial_pos_hint()
         self.move(initial_pos) # ウィンドの場所を移動
 
-        self.setWindowFlags(self.window_setting_flag) # フラグセット
-        self.setMinimumSize(160, 90) # 最小ウィンドウサイズを設定
+        self.setWindowFlags(self.window_setting_flag)
+        self.setMinimumSize(160, 90)
         self.setBackgroundBrush(QtGui.QColor("#181A1B"))
         self.setWindowOpacity(self.window_opacity)
 
@@ -247,9 +247,6 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
     def mouseMoveEvent(self, event):
 
-        """
-        ドラッグの実装内の命名がひどいです。ごめんなさい
-        """
         if event.button() == QtCore.Qt.LeftButton:
 
             if self.pressed_status == Pressed_status.RESIZEABLE_UPPER_LEFT:
