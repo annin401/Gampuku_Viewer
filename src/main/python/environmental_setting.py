@@ -116,3 +116,20 @@ class Environmental_setting(QtWidgets.QMainWindow):
         self.ui.spinBox.valueChanged.connect(self.update_interval_changed.emit)
         self.ui.horizontalSlider.valueChanged.connect(self.opacity_changed.emit)
         self.ui.checkBox.stateChanged.connect(self.window_on_top_state_changed.emit)
+
+    def set_update_interval(self, m_time:int)-> None:
+        time = m_time # 1000 ミリ
+        self.ui.spinBox.setProperty("value", time)
+
+    def set_opacity(self, opacity:float)-> None:
+
+        # 透明度を反転した透明度に直して整数化する
+        reversed_opacity = (1.0 - opacity) * 100 
+        self.ui.horizontalSlider.setSliderPosition(reversed_opacity)
+
+    def set_is_on_top(self, flag:int)-> None:
+
+        if flag == QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint:
+            self.ui.checkBox.setChecked(True)
+        else:
+            self.ui.checkBox.setChecked(False)
