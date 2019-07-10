@@ -345,9 +345,8 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         # iniファイルに書き出す
         self.settings.sync()
 
-        # スライドショーの終了
-        self.stop_slideshow()
-
+        # 環境設定が開いている場合、閉じる
+        self.env_window.close()
 class Pressed_status(Enum):
 
 #　マウスをクリックしている時の状態を保持する列挙体
