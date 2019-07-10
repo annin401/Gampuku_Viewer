@@ -11,6 +11,7 @@ class ImagePaths( QtCore.QObject ):
         super().__init__()
 
         self.__path_list = [] # 読み取り専用
+        self.__dir_path = "" # 読み取り専用
 
     # 添字アクセル可能にするためのメソッド
     def __getitem__(self, key):
@@ -33,12 +34,17 @@ class ImagePaths( QtCore.QObject ):
     def __bool__(self):
         return bool(self.__path_list)
 
-
     # len()で長さを所得できるようにする
     def __len__(self):
         return len(self.__path_list)
 
-    def make_list(self, dir_path: str) -> None :
+    def get_dir_path(self) -> str:
+        return self.__dir_path
+
+    def make_list(self, dir_path: str) -> None:
+
+        # ディレクトリのパスを保存
+        self.__dir_path = dir_path
 
         # __path_listに先に入っていたら消す
         if self.__path_list:
