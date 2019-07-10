@@ -118,7 +118,7 @@ class Environmental_setting(QtWidgets.QMainWindow):
         self.ui.checkBox.stateChanged.connect(self.window_on_top_state_changed.emit)
 
     def set_update_interval(self, m_time:int)-> None:
-        time = m_time # 1000 ミリ
+        time = m_time // 1000 # 1000 ミリ
         self.ui.spinBox.setProperty("value", time)
 
     def set_opacity(self, opacity:float)-> None:
@@ -129,7 +129,7 @@ class Environmental_setting(QtWidgets.QMainWindow):
 
     def set_is_on_top(self, flag:int)-> None:
 
-        if flag == QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint:
+        if flag == int(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint):
             self.ui.checkBox.setChecked(True)
         else:
             self.ui.checkBox.setChecked(False)

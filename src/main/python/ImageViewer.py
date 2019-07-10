@@ -19,9 +19,8 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         self.window_setting_flag = QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint
         self.window_opacity = 1.0 
 
-        self.init_imageViewer()
-
         # for slideshow
+        self.is_active = False 
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update_image) 
         self.update_interval = 2000 # ミリ秒
@@ -34,11 +33,20 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         self.size_when_clicked = QtCore.QSize()
 
         # for context menu
+        self.menu = QtWidgets.QMenu()
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.init_context_menu)
+        self.customContextMenuRequested.connect(self.show_context_menu)
 
         # for environmental_setting
         self.env_window = Environmental_setting()
+
+        # for QSettings
+        self.settings = QtCore.QSettings("app.ini", QtCore.QSettings.IniFormat)
+        self.settings.setIniCodec(QtCore.QTextCodec.codecForName("utf-8"))
+
+        # それぞれの初期化
+        self.init_imageViewer()
+        self.init_environmental_setting()
 
 
     def init_imageViewer(self):
@@ -66,7 +74,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         scene.setSceneRect( QtCore.QRectF( self.rect()))
         self.setScene(scene)
 
-    def init_context_menu(self):
+    def show_context_menu(self):
 
         # アクションの設定
         open_folder = QtWidgets.QAction("フォルダーを開く")
@@ -75,13 +83,12 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         open_folder.triggered.connect(self.start_slideshow)
 
         open_environmental_setting = QtWidgets.QAction("環境設定を開く")
-        open_environmental_setting.triggered.connect(self.init_environmental_setting)
+        open_environmental_setting.triggered.connect(self.show_environmental_setting)
 
         exit_action = QtWidgets.QAction("終了")
         exit_action.triggered.connect(self.close)
 
         # メニューを構築
-        self.menu = QtWidgets.QMenu()
         self.menu.addAction(open_folder)
         self.menu.addAction(open_environmental_setting)
         self.menu.addSection("")
@@ -92,15 +99,28 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
     def init_environmental_setting(self):
 
-        # 環境設定ウィンドウを表示
-        self.env_window.show()
-        # 画面の一番上に固定されたウィンドウとかぶるので左上に移動
-        self.env_window.move(0, 0)
-
         # env_windowからでるsignalを接続
         self.env_window.update_interval_changed.connect(self.set_update_interval)
         self.env_window.opacity_changed.connect(self.set_opacity)
         self.env_window.window_on_top_state_changed.connect(self.set_window_setting_flag)
+
+        # iniファイルから情報を読み込む
+        loaded_update_interval = int(self.settings.value("update_interval", 2000))
+        loaded_opacity = float(self.settings.value("opacity", 1.0))
+        loaded_is_on_top = int(self.settings.value("is_on_top",
+            QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint))
+
+        # 環境設定の情報を渡す
+        self.env_window.set_update_interval(loaded_update_interval)
+        self.env_window.set_opacity(loaded_opacity)
+        self.env_window.set_is_on_top(loaded_is_on_top)
+
+    def show_environmental_setting(self):
+
+        # 環境設定ウィンドウを表示
+        self.env_window.show()
+        # 画面の一番上に固定されたウィンドウとかぶるので左上に移動
+        self.env_window.move(0, 0)
 
     def _get_initial_pos_hint(self) -> QtCore.QPoint:
         """
@@ -112,13 +132,15 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         margin = 30 # px
         return QtCore.QPoint(d_width - self.width() - margin, d_height - self.height() - margin)
+
     def set_update_interval(self, sec: int)-> None:
 
         # 秒をミリ秒に直す
         m_sec = sec * 1000
         self.update_interval = m_sec
 
-        self.timer.start(self.update_interval)
+        if self.is_active:
+            self.timer.start(self.update_interval)
 
     def set_opacity(self, reversed_opacity: int)-> None:
 
@@ -152,6 +174,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
     def show_set_Dialog(self):
 
         # ファイルダイアログを表示
+
         dirpath = QtWidgets.QFileDialog.getExistingDirectory(self,
             'Select Folder', os.path.expanduser('~'),
             )
@@ -177,10 +200,15 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         # 最初に表示する画像をセットする
         self.update_image()
 
+        # フラグを立てる
+        self.is_active = True
+
     def stop_slideshow(self):
 
         # 画像更新をする関数を呼び出すタイマーをストップする 
         self.timer.stop()
+
+        self.is_active = False
 
     def update_image(self):
 
@@ -302,6 +330,19 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         self.pressed_status = Pressed_status.NORMAL
         self.unsetCursor()# カーソルを元に戻す
+
+    def closeEvent(self, event):
+
+        # 環境設定で設定したことをiniファイルの保存
+        self.settings.setValue("update_interval", int(self.update_interval))
+        self.settings.setValue("opacity", float(self.window_opacity))
+        self.settings.setValue("is_on_top", int(self.window_setting_flag))
+
+        # iniファイルに書き出す
+        self.settings.sync()
+
+        # スライドショーの終了
+        self.stop_slideshow()
 
 class Pressed_status(Enum):
 
