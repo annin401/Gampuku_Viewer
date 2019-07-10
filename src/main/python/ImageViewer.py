@@ -173,18 +173,22 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
     def show_set_Dialog(self):
 
-        # ファイルダイアログを表示
+        # iniファイルから前回選択したディレクトリパスを取り出す
+        loaded_dir_path = self.settings.value("selected_dir_path", os.path.expanduser('~'))
 
-        dirpath = QtWidgets.QFileDialog.getExistingDirectory(self,
-            'Select Folder', os.path.expanduser('~'),
-            )
+        # ファイルダイアログを表示
+        selected_dir_path = QtWidgets.QFileDialog.getExistingDirectory(self,
+            'Select Folder', loaded_dir_path)
 
         # フォルダーが選択されなかったら終了
-        if dirpath == '':
+        if selected_dir_path == '':
             return 
 
         # 画像パスのリストを生成
-        self.image_paths.make_list(dirpath)
+        self.image_paths.make_list(selected_dir_path)
+
+        # 選択したディレクトリパスをiniファイルに保存
+        self.settings.setValue("selected_dir_path", selected_dir_path)
 
     def start_slideshow(self):
 
