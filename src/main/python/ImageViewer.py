@@ -47,6 +47,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         # それぞれの初期化
         self.init_imageViewer()
         self.init_environmental_setting()
+        self.init_shortcut()
 
 
     def init_imageViewer(self):
@@ -138,6 +139,22 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         margin = 30 # px
         return QtCore.QPoint(d_width - self.width() - margin, d_height - self.height() - margin)
+
+    def init_shortcut(self):
+
+        # フォルダを選択
+        open_folder_event = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+O'), self)
+        open_folder_event.activated.connect(self.stop_slideshow)
+        open_folder_event.activated.connect(self.show_set_Dialog)
+        open_folder_event.activated.connect(self.start_slideshow)
+
+        # 環境設定
+        show_env_window_event = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+,'), self)
+        show_env_window_event.activated.connect(self.show_environmental_setting)
+
+        # 終了
+        close_event = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+W'), self)
+        close_event.activated.connect(self.close)
 
     def set_update_interval(self,sec: int)-> None:
 
