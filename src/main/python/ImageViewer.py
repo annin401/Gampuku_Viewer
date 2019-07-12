@@ -253,8 +253,14 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         if self.path_index == len(self.image_paths):
             self.path_index = 0
 
-        # 画像をセットする
-        self.scene().set_file( self.image_paths[self.path_index] )
+        try:
+            # 画像をセットする
+            self.scene().set_file( self.image_paths[self.path_index] )
+        except ZeroDivisionError:
+            # アクセス権限がない画像などでは、その画像を無視する
+            self.path_index += 1
+            self.update_image()
+            return 
 
         # インデックスを更新
         self.path_index += 1 
