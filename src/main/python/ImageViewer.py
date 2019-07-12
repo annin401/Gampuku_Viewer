@@ -79,9 +79,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # アクションの設定
         open_folder = QtWidgets.QAction("フォルダーを開く")
-        open_folder.triggered.connect(self.stop_slideshow)
-        open_folder.triggered.connect(self.show_set_Dialog)
-        open_folder.triggered.connect(self.start_slideshow)
+        open_folder.triggered.connect(self.select_folder_event)
 
         open_environmental_setting = QtWidgets.QAction("環境設定を開く")
         open_environmental_setting.triggered.connect(self.show_environmental_setting)
@@ -144,9 +142,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # フォルダを選択
         open_folder_event = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+O'), self)
-        open_folder_event.activated.connect(self.stop_slideshow)
-        open_folder_event.activated.connect(self.show_set_Dialog)
-        open_folder_event.activated.connect(self.start_slideshow)
+        open_folder_event.activated.connect(self.select_folder_event)
 
         # 環境設定
         show_env_window_event = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+,'), self)
@@ -194,7 +190,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         # フラグを更新するとウィンドウが消えるので再描画
         self.show()
 
-    def show_set_Dialog(self):
+    def show_set_Dialog(self) -> bool:
 
         # iniファイルから前回選択したディレクトリパスを取り出す
         loaded_dir_path = self.settings.value("selected_dir_path", os.path.expanduser('~'))
@@ -203,15 +199,18 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         selected_dir_path = QtWidgets.QFileDialog.getExistingDirectory(self,
             'Select Folder', loaded_dir_path)
 
-        # フォルダーが選択されなかったら終了
+        # フォルダーが選択されなかったら終了しFalseを返す
         if selected_dir_path == '':
-            return 
+            return False
 
         # 画像パスのリストを生成
         self.image_paths.make_list(selected_dir_path)
 
         # 選択したディレクトリパスをiniファイルに保存
         self.settings.setValue("selected_dir_path", selected_dir_path)
+
+        # フォルダーが選択されたらTrueを返す
+        return True
 
     def start_slideshow(self):
 
@@ -227,7 +226,18 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         # 最初に表示する画像をセットする
         self.update_image()
 
-        # フラグを立てる
+        # 更新間隔を変更時に使用するフラグを立てる
+        self.is_active = True
+
+    def restart_slideshow(self):
+
+        if not self.image_paths:
+            return 
+
+        # 画像更新をする関数を呼び出すタイマーをスタートする
+        self.timer.start(self.update_interval)
+
+        # 更新間隔を変更時に使用するフラグを立てる
         self.is_active = True
 
     def stop_slideshow(self):
@@ -248,6 +258,18 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # インデックスを更新
         self.path_index += 1 
+
+    def select_folder_event(self):
+
+        self.stop_slideshow()
+
+        is_selected = self.show_set_Dialog()
+
+        # フォルダーの選択をキャンセルしたらそのまま再生
+        if is_selected:
+            self.start_slideshow()
+        else:
+            self.restart_slideshow()
 
     def resizeEvent(self, event):
 
