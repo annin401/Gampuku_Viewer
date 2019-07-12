@@ -33,7 +33,7 @@ class Ui_enviromental_setting(object):
         self.spinBox = QtWidgets.QSpinBox(self.centralwidget)
         self.spinBox.setStyleSheet("background-color: \"#67696E\"")
         self.spinBox.setMinimum(1)
-        self.spinBox.setMaximum(999)
+        self.spinBox.setMaximum(9999)
         self.spinBox.setProperty("value", 2)
         self.spinBox.setObjectName("spinBox")
         self.horizontalLayout.addWidget(self.spinBox, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
