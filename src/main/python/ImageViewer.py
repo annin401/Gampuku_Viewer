@@ -119,8 +119,14 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # 環境設定ウィンドウを表示
         self.env_window.show()
-        # 画面の一番上に固定されたウィンドウとかぶるので左上に移動
-        self.env_window.move(0, 0)
+
+        # ディスプレイの中央の座標を求める
+        screen_size = QtWidgets.qApp.desktop().size()
+        central_pos = QtCore.QPoint(screen_size.width() // 2 - self.env_window.size().width(),
+            screen_size.height() // 2 - self.env_window.size().height())
+
+        # 中央の移動
+        self.env_window.move(central_pos)
 
     def _get_initial_pos_hint(self) -> QtCore.QPoint:
         """
@@ -133,7 +139,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         margin = 30 # px
         return QtCore.QPoint(d_width - self.width() - margin, d_height - self.height() - margin)
 
-    def set_update_interval(self, sec: int)-> None:
+    def set_update_interval(self,sec: int)-> None:
 
         # 秒をミリ秒に直す
         m_sec = sec * 1000
