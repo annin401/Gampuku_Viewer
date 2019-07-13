@@ -41,7 +41,8 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         self.env_window = Environmental_setting()
 
         # for QSettings
-        self.settings = QtCore.QSettings("app.ini", QtCore.QSettings.IniFormat)
+        self.settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,
+        "Gampuku Viewer")
         self.settings.setIniCodec(QtCore.QTextCodec.codecForName("utf-8"))
 
         # それぞれの初期化
@@ -257,7 +258,8 @@ class ImageViewer( QtWidgets.QGraphicsView ):
             # 画像をセットする
             self.scene().set_file( self.image_paths[self.path_index] )
         except ZeroDivisionError:
-            # アクセス権限がない画像などでは、その画像を無視する
+            # アクセス権限がない画像などboundingRectが所得できないため
+            # 0除算が起こるため、その時は無視するようにする
             self.path_index += 1
             self.update_image()
             return 
