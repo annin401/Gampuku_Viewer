@@ -1,6 +1,6 @@
 {
-    "app_name": "Ganpuku Viewer",
-    "author": "Hikaru Hashidzume",
+    "app_name": "Gampuku Viewer",
+    "author": "annin401",
     "main_module": "src/main/python/main.py",
-    "version": "0.0.0"
+    "version": "1.0.0"
 }
