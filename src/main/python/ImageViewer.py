@@ -8,6 +8,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from ImagePaths import ImagePaths
 from ImageViewScene import ImageViewScene
 from environmental_setting import Environmental_setting
+from Observer import Observer
 
 class ImageViewer( QtWidgets.QGraphicsView ):
 
@@ -45,6 +46,10 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         "Gampuku Viewer")
         self.settings.setIniCodec(QtCore.QTextCodec.codecForName("utf-8"))
 
+        # for Obserber
+        self.obserber = Observer()
+        self.obserber.directory_changed.connect(self._directory_chage_occer_event)
+
         # それぞれの初期化
         self.init_imageViewer()
         self.init_environmental_setting()
@@ -80,7 +85,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # アクションの設定
         open_folder = QtWidgets.QAction("フォルダーを開く")
-        open_folder.triggered.connect(self.select_folder_event)
+        open_folder.triggered.connect(self._select_folder_event)
 
         open_environmental_setting = QtWidgets.QAction("環境設定を開く")
         open_environmental_setting.triggered.connect(self.show_environmental_setting)
@@ -143,7 +148,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # フォルダを選択
         open_folder_event = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+O'), self)
-        open_folder_event.activated.connect(self.select_folder_event)
+        open_folder_event.activated.connect(self._select_folder_event)
 
         # 環境設定
         show_env_window_event = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+,'), self)
@@ -220,7 +225,6 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # 初期化
         self.path_index = 0
-
         # 画像更新をする関数を呼び出すタイマーをスタートする
         self.timer.start(self.update_interval)
 
@@ -229,6 +233,10 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # 更新間隔を変更時に使用するフラグを立てる
         self.is_active = True
+
+        # ディレクトリを監視するクラスをスタートする
+        self.obserber.set__target_path(self.image_paths.get_dir_path())
+        self.obserber.start()
 
     def restart_slideshow(self):
 
@@ -240,6 +248,10 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # 更新間隔を変更時に使用するフラグを立てる
         self.is_active = True
+
+        # ディレクトリを監視するクラスをスタートする
+        self.obserber.set__target_path(self.image_paths.get_dir_path())
+        self.obserber.start()
 
     def stop_slideshow(self):
 
@@ -267,7 +279,8 @@ class ImageViewer( QtWidgets.QGraphicsView ):
         # インデックスを更新
         self.path_index += 1 
 
-    def select_folder_event(self):
+    def _select_folder_event(self):
+        # フォルダーを選択する時の動作をまとめたメソッド
 
         self.stop_slideshow()
 
@@ -278,6 +291,17 @@ class ImageViewer( QtWidgets.QGraphicsView ):
             self.start_slideshow()
         else:
             self.restart_slideshow()
+
+    def _directory_chage_occer_event(self):
+        # 選択してたディレクトリに新しい画像が入ったり消
+        # えたりした時に呼ばれるメソッド
+
+        self.stop_slideshow()
+
+        # image_pathsを作り直す
+        self.image_paths.make_list(self.image_paths.get_dir_path())
+
+        self.start_slideshow()
 
     def resizeEvent(self, event):
 
@@ -400,6 +424,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # 環境設定が開いている場合、閉じる
         self.env_window.close()
+
 class Pressed_status(Enum):
 
 #　マウスをクリックしている時の状態を保持する列挙体
