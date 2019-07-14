@@ -435,12 +435,3 @@ class Pressed_status(Enum):
     RESIZEABLE_UPPER_RIGHT = auto()
     RESIZEABLE_UNDER_RIGHT = auto()
     RESIZEABLE_UNDER_LEFT = auto()
-
-# for debug
-app = QtWidgets.QApplication([])
-v = ImageViewer()
-v.show()
-v.show_set_Dialog()
-v.start_slideshow()
-import sys
-sys.exit(app.exec_())
