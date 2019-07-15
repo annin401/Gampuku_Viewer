@@ -1,5 +1,7 @@
+
 # Gampuku Viewer
-<img src="https://github.com/annin401/Gampuku_Viewer/blob/master/IMAGES/Gampuku_icon.png?raw=true" width="300">)
+<img src="https://github.com/annin401/Gampuku_Viewer/blob/master/IMAGES/Gampuku_icon.png?raw=true" width="300">
+
 保存した画像を眺めるための、スライドショー型画像ビューア
 ## 特徴
 * 常に最前面に表示可能
