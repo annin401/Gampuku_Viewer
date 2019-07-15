@@ -1,5 +1,5 @@
 # Gampuku Viewer
-![](https://github.com/annin401/Gampuku_Viewer/blob/master/IMAGES/Gampuku_icon.png?raw=true)
+<img src="https://github.com/annin401/Gampuku_Viewer/blob/master/IMAGES/Gampuku_icon.png?raw=true" width="300">)
 保存した画像を眺めるための、スライドショー型画像ビューア
 ## 特徴
 * 常に最前面に表示可能
@@ -7,7 +7,7 @@
 * フレームレスウィンドウ
 * リサイズ時に画像を必ずウィンドウの中央に配置。そのため、画像が引き伸ばされる心配がありません。
 ## デモ
-<img src="https://github.com/annin401/Gampuku_Viewer/blob/master/IMAGES/Gampuku_icon.png?raw=true" width="300">
+![](https://github.com/annin401/Gampuku_Viewer/blob/master/IMAGES/demo1.gif?raw=true)
 ## ダウンロード
 ### Mac OS
 [Download](https://github.com/annin401/Gampuku_Viewer/releases)
