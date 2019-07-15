@@ -1,10 +1,12 @@
+'''
+Observer.py
+
+Copyright © 2019 Hashidzume Hikaru. All rights reserved.
+Released under the GPL license.
+'''
 import os
 from watchdog import events, observers
 from PyQt5 import QtWidgets, QtCore
-
-'''
-ディレクトリに新しい画像が入ったりしないか監視するクラス
-'''
 
 class Observer(QtCore.QObject):
     directory_changed = QtCore.pyqtSignal()

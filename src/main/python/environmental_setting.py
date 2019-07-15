@@ -1,3 +1,10 @@
+'''
+environmental_setting.py
+
+Copyright © 2019 Hashidzume Hikaru. All rights reserved.
+Released under the GPL license.
+'''
+
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'environmental_setting.ui'

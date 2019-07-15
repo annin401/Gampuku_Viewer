@@ -1,3 +1,9 @@
+'''
+main.py
+
+Copyright © 2019 Hashidzume Hikaru. All rights reserved.
+Released under the GPL license.
+'''
 import sys
 from fbs_runtime.application_context import ApplicationContext
 from ImageViewer import ImageViewer

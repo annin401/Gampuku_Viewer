@@ -1,7 +1,10 @@
 '''
-指定されたディレクトリの下のファイルのパスをもつオブジェクト
-添字アクセス，およびイテレート可能
+ImagesPaths.py
+
+Copyright © 2019 Hashidzume Hikaru. All rights reserved.
+Released under the GPL license.
 '''
+
 import os
 from PyQt5 import QtCore
 

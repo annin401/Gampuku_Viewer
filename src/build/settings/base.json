@@ -1,6 +1,6 @@
 {
     "app_name": "Gampuku Viewer",
-    "author": "annin401",
+    "author": "Hashidzume Hikaru",
     "main_module": "src/main/python/main.py",
     "version": "1.0.0"
 }

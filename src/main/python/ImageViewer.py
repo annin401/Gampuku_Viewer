@@ -1,7 +1,10 @@
 '''
-イメージを表示する画面
-MainWindowの代わり
+ImageViewr.py
+
+Copyright © 2019 Hashidzume Hikaru. All rights reserved.
+Released under the GPL license.
 '''
+
 import os
 from enum import Enum, auto
 from PyQt5 import QtWidgets, QtCore, QtGui

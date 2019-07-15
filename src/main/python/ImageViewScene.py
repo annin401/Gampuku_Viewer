@@ -1,3 +1,9 @@
+'''
+ImageViewScene.py
+
+Copyright © 2019 Hashidzume Hikaru. All rights reserved.
+Released under the GPL license.
+'''
 from PyQt5 import QtWidgets, QtGui
 
 class ImageViewScene( QtWidgets.QGraphicsScene ):
