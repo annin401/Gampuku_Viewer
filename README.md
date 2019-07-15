@@ -7,7 +7,7 @@
 * フレームレスウィンドウ
 * リサイズ時に画像を必ずウィンドウの中央に配置。そのため、画像が引き伸ばされる心配がありません。
 ## デモ
-![](https://github.com/annin401/Gampuku_Viewer/blob/master/IMAGES/demo1.gif?raw=true)
+<img src="https://github.com/annin401/Gampuku_Viewer/blob/master/IMAGES/Gampuku_icon.png?raw=true" width="300">
 ## ダウンロード
 ### Mac OS
 [Download](https://github.com/annin401/Gampuku_Viewer/releases)
