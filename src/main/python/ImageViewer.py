@@ -124,6 +124,7 @@ class ImageViewer( QtWidgets.QGraphicsView ):
 
         # 環境設定ウィンドウを表示
         self.env_window.show()
+        self.env_window.raise_()
 
         # ディスプレイの中央の座標を求める
         screen_size = QtWidgets.qApp.desktop().size()
